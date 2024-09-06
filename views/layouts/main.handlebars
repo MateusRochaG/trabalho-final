@@ -1,12 +1,31 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Celke</title>
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/css/styles.css"> <!-- Link para o arquivo CSS -->
 </head>
 <body>
-    {{{body}}}
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">Sobre</a></li>
+                <li><a href="/animais/cadastro">Cadastro de Animais</a></li>
+                <li><a href="/animais/listagem">Listagem de Animais</a></li>
+                <li><a href="/veterinarios/cadastro">Cadastro de Veterinários</a></li>
+                <li><a href="/veterinarios/listagem">Listagem de Veterinários</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {{{body}}} <!-- Conteúdo específico de cada página -->
+    </main>
+
+    <footer>
+        <p>© 2024 Petshop. Todos os direitos reservados.</p>
+    </footer>
 </body>
 </html>

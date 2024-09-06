@@ -1,0 +1,8 @@
+<h1>Exclusão de Animais</h1>
+<p>Tem certeza que deseja excluir o animal "{{animal.nome}}"?</p>
+
+<form action="/animais/exclusao/{{animal.id}}" method="POST">
+    <button type="submit">Sim</button>
+    <a href="/animais/listagem">Cancelar</a>
+</form>
+

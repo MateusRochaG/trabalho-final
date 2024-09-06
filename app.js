@@ -1,8 +1,8 @@
 const express = require("express");
 const app = express();
 
-const Usuario = require("./models/Usuario");
-const Pagamento = require("./models/Pagamento");
+const Animais = require("./models/animais");
+const Veterinarios = require("./models/veterinarios");
 const path = require('path');
 const router = express.Router();
 const moment = require('moment');
@@ -26,114 +26,103 @@ app.set('view engine', 'handlebars');
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// Rotas de Usuário
-router.get('/usuario', function(req, res) {
-    res.render('cad_usuario'); // Renderiza a view 'cad_usuario.handlebars'
+// Configuração de arquivos estáticos (CSS, JS, etc.)
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Rotas de Animais
+router.get('/animais/cadastro', (req, res) => {
+    res.render('cadastro_animais');
 });
 
-router.post('/usuario', function(req, res) {
-    Usuario.create({
+router.post('/animais/cadastro', (req, res) => {
+    Animais.create({
         nome: req.body.nome,
-        email: req.body.email,
-        senha: req.body.senha
-    }).then(function() {
-        res.redirect('/usuario'); // Redireciona para a lista de usuários
-    }).catch(function(erro) {
-        res.send("Erro: Usuário não foi cadastrado com sucesso!" + erro);
+        especie: req.body.especie,
+        raca: req.body.raca,
+        idade: req.body.idade
+    }).then(() => {
+        res.redirect('/animais/listagem');
+    }).catch((erro) => {
+        res.send("Erro: Animal não foi cadastrado com sucesso! " + erro);
     });
 });
 
-router.get('/usuario/lista', function(req, res) {
-    Usuario.findAll().then(function(usuarios) {
-        res.render('lista_usuarios', { usuarios: usuarios }); // Renderiza a view 'lista_usuarios.handlebars'
+router.get('/animais/listagem', (req, res) => {
+    Animais.findAll().then((animais) => {
+        res.render('listagem_animais', { animais: animais });
     });
 });
 
-router.get('/del-usuario/:id', function(req, res) {
-    Usuario.destroy({
-        where: { 'id': req.params.id }
-    }).then(function() {
-        res.redirect('/usuario/lista'); // Redireciona para a lista de usuários
-    }).catch(function(erro) {
-        res.send("Erro: Usuário não foi apagado com sucesso!" + erro);
+router.get('/animais/edicao/:id', (req, res) => {
+    Animais.findByPk(req.params.id).then((animal) => {
+        res.render('edicao_animais', { animal: animal });
     });
 });
 
-router.get('/edit-usuario/:id', function(req, res) {
-    Usuario.findByPk(req.params.id).then(function(usuario) {
-        res.render('editarUsuario', { usuario: usuario }); // Renderiza a view 'editarUsuario.handlebars'
-    });
-});
-
-router.post('/edit-usuario/:id', function(req, res) {
-    Usuario.update({
+router.post('/animais/edicao/:id', (req, res) => {
+    Animais.update({
         nome: req.body.nome,
-        email: req.body.email,
-        senha: req.body.senha
+        especie: req.body.especie,
+        raca: req.body.raca,
+        idade: req.body.idade
     }, {
         where: { id: req.params.id }
-    }).then(function() {
-        res.redirect('/usuario/lista'); // Redireciona para a lista de usuários
-    }).catch(function(erro) {
-        res.send("Erro: Usuário não foi atualizado com sucesso!" + erro);
+    }).then(() => {
+        res.redirect('/animais/listagem');
+    }).catch((erro) => {
+        res.send("Erro: Animal não foi atualizado com sucesso! " + erro);
     });
 });
 
-
-// Rotas de Pagamento
-router.get('/pagamento', function(req, res) {
-    res.render('pagamento'); // Renderiza a view 'pagamento.handlebars'
+router.post('/animais/exclusao/:id', (req, res) => {
+    Animais.destroy({
+        where: { id: req.params.id }
+    }).then(() => {
+        res.redirect('/animais/listagem');
+    }).catch((erro) => {
+        res.send("Erro: Animal não foi excluído com sucesso! " + erro);
+    });
 });
 
-router.get('/', function(req, res) {
-    res.render('index'); // Renderiza a view 'index.handlebars'
+// Rotas de Veterinários
+router.get('/veterinarios/cadastro', (req, res) => {
+    res.render('cadastro_veterinarios');
 });
 
-router.post('/pagamento', function(req, res) {
-    Pagamento.create({
+router.post('/veterinarios/cadastro', (req, res) => {
+    Veterinarios.create({
         nome: req.body.nome,
-        valor: req.body.valor
-    }).then(function() {
-        res.redirect('/pagamento');
-    }).catch(function(erro) {
-        res.send("Erro: Pagamento não foi cadastrado com sucesso!" + erro);
+        especialidade: req.body.especialidade,
+        telefone: req.body.telefone,
+        email: req.body.email,
+        data_contratacao: req.body.data_contratacao
+    }).then(() => {
+        res.redirect('/veterinarios/listagem');
+    }).catch((erro) => {
+        if (erro.name === 'SequelizeUniqueConstraintError') {
+            res.send("Erro: O email informado já está cadastrado!"); // Mensagem clara para o usuário
+        } else {
+            res.send("Erro: Veterinário não foi cadastrado com sucesso! " + erro);
+        }
     });
 });
 
-router.get('/lista', function(req, res) {
-    Pagamento.findAll().then(function(pagamentos) {
-        res.render('pagamento', { pagamentos: pagamentos }); // Renderiza a view 'pagamento.handlebars'
+
+router.get('/veterinarios/listagem', (req, res) => {
+    Veterinarios.findAll().then((veterinarios) => {
+        res.render('listagem_veterinarios', { veterinarios: veterinarios });
     });
 });
 
-router.get('/del-pagamento/:id', function(req, res) {
-    Pagamento.destroy({
-        where: { 'id': req.params.id }
-    }).then(function() {
-        res.redirect('/pagamento');
-    }).catch(function(erro) {
-        res.send("Erro: Pagamento não foi apagado com sucesso!" + erro);
-    });
+// Home e outras rotas
+router.get('/', (req, res) => {
+    res.render('home');
 });
 
-router.get('/edit-pagamento/:id', function(req, res) {
-    Pagamento.findByPk(req.params.id).then(function(pagamentos) {
-        res.render('editar', { pagamentos: pagamentos }); // Renderiza a view 'editar.handlebars'
-    });
+router.get('/about', (req, res) => {
+    res.render('about'); // Renderiza o arquivo 'sobre.handlebars'
 });
 
-router.post('/edit-pagamento/:id', function(req, res) {
-    Pagamento.update({
-        nome: req.body.nome,
-        valor: req.body.valor
-    }, {
-        where: { 'id': req.params.id }
-    }).then(function() {
-        res.redirect('/lista');
-    }).catch(function(erro) {
-        res.send("Erro: Pagamento não foi atualizado com sucesso!" + erro);
-    });
-});
 
 // Usar o router configurado
 app.use('/', router);

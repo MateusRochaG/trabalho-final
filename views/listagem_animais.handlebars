@@ -1,0 +1,17 @@
+<h1>Listagem de Animais</h1>
+
+<ul>
+    {{#each animais}}
+        <li>
+            Nome: {{this.nome}} <br>
+            Espécie: {{this.especie}} <br>
+            Raça: {{this.raca}} <br>
+            Idade: {{this.idade}} <br>
+            <a href="/animais/edicao/{{this.id}}">Editar</a>
+            <form action="/animais/exclusao/{{this.id}}" method="POST" style="display:inline;">
+                <button type="submit">Excluir</button>
+            </form>
+            <hr>
+        </li>
+    {{/each}}
+</ul>

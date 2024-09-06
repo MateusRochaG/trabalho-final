@@ -1,0 +1,16 @@
+<h1>Listagem de Veterinários</h1>
+
+<ul>
+    {{#each veterinarios}}
+        <li>
+            <strong>Nome:</strong> {{this.nome}} <br>
+            <strong>Especialidade:</strong> {{this.especialidade}} <br>
+            <strong>Telefone:</strong> {{this.telefone}} <br>
+            <strong>Email:</strong> {{this.email}} <br>
+            <strong>Data de Contratação:</strong> {{formatDate this.data_contratacao}} <br>
+            <hr>
+        </li>
+    {{else}}
+        <li>Nenhum veterinário cadastrado</li>
+    {{/each}}
+</ul>
